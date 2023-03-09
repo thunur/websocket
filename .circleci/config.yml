@@ -1,11 +1,11 @@
 version: 2.1
 
 jobs:
-  "test":
+  'test':
     parameters:
       version:
         type: string
-        default: "latest"
+        default: 'latest'
       golint:
         type: boolean
         default: true
@@ -14,21 +14,21 @@ jobs:
         default: true
       goproxy:
         type: string
-        default: ""
+        default: ''
     docker:
-      - image: "cimg/go:<< parameters.version >>"
-    working_directory: /home/circleci/project/go/src/github.com/gorilla/websocket
+      - image: 'cimg/go:<< parameters.version >>'
+    working_directory: /home/circleci/project/go/src/github.com/thunur/websocket
     environment:
-      GO111MODULE: "on"
-      GOPROXY: "<< parameters.goproxy >>"
+      GO111MODULE: 'on'
+      GOPROXY: '<< parameters.goproxy >>'
     steps:
       - checkout
       - run:
-          name: "Print the Go version"
+          name: 'Print the Go version'
           command: >
             go version
       - run:
-          name: "Fetch dependencies"
+          name: 'Fetch dependencies'
           command: >
             if [[ << parameters.modules >> = true ]]; then
               go mod download
@@ -38,26 +38,26 @@ jobs:
             fi
       # Only run gofmt, vet & lint against the latest Go version
       - run:
-          name: "Run golint"
+          name: 'Run golint'
           command: >
             if [ << parameters.version >> = "latest" ] && [ << parameters.golint >> = true ]; then
               go get -u golang.org/x/lint/golint
               golint ./...
             fi
       - run:
-          name: "Run gofmt"
+          name: 'Run gofmt'
           command: >
             if [[ << parameters.version >> = "latest" ]]; then
               diff -u <(echo -n) <(gofmt -d -e .)
             fi
       - run:
-          name: "Run go vet"
+          name: 'Run go vet'
           command: >
             if [[ << parameters.version >> = "latest" ]]; then
               go vet -v ./...
             fi
       - run:
-          name: "Run go test (+ race detector)"
+          name: 'Run go test (+ race detector)'
           command: >
             go test -v -race ./...
 
@@ -67,4 +67,4 @@ workflows:
       - test:
           matrix:
             parameters:
-              version: ["1.18", "1.17", "1.16"]
+              version: ['1.18', '1.17', '1.16']
